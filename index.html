@@ -1,0 +1,1743 @@
+<!DOCTYPE html>
+<html lang="vi" data-theme="dark">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Green Mile — Carbon Fintech Super App</title>
+  <meta name="description"
+    content="Green Mile là nền tảng fintech carbon hàng đầu — biến mỗi hành trình xanh thành tài sản tài chính minh bạch trên blockchain." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap"
+    rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <!-- ethers.js v5 — Priority 1: MetaMask / Web3 interaction -->
+  <script src="https://cdn.ethers.io/lib/ethers-5.7.2.umd.min.js" type="application/javascript"></script>
+  <!-- Leaflet.js Real Map -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
+  <!-- Leaflet MarkerCluster -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css" />
+  <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
+  <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+
+  <!-- ========== SPLASH SCREEN ========== -->
+  <div id="splash" class="splash">
+    <div class="splash-content">
+      <div class="splash-logo">
+        <div class="logo-icon">
+          <svg width="56" height="56" viewBox="0 0 56 56" fill="none">
+            <circle cx="28" cy="28" r="28" fill="url(#splashGrad)" />
+            <path d="M28 12C19.16 12 12 19.16 12 28C12 36.84 19.16 44 28 44C36.84 44 44 36.84 44 28" stroke="white"
+              stroke-width="2.5" stroke-linecap="round" />
+            <path d="M36 20L44 12M44 12H38M44 12V18" stroke="white" stroke-width="2.5" stroke-linecap="round"
+              stroke-linejoin="round" />
+            <path d="M22 28C22 28 24 32 28 32C32 32 34 28 34 28" stroke="white" stroke-width="2.5"
+              stroke-linecap="round" />
+            <circle cx="28" cy="22" r="2" fill="white" />
+            <defs>
+              <linearGradient id="splashGrad" x1="0" y1="0" x2="56" y2="56">
+                <stop offset="0%" stop-color="#10b981" />
+                <stop offset="100%" stop-color="#065f46" />
+              </linearGradient>
+            </defs>
+          </svg>
+        </div>
+        <div>
+          <div class="splash-brand">GREEN MILE</div>
+          <div class="splash-tagline">Carbon Fintech Super App</div>
+        </div>
+      </div>
+      <div class="splash-loader">
+        <div class="splash-bar">
+          <div class="splash-fill" id="splashFill"></div>
+        </div>
+        <div class="splash-status" id="splashStatus">Khởi tạo blockchain layer...</div>
+      </div>
+      <div class="splash-version">v2.0 · Polygon Network · AI-Verified</div>
+    </div>
+  </div>
+
+  <!-- ========== MAIN APP ========== -->
+  <div id="app" class="app hidden">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <div class="sidebar-logo">
+          <div class="logo-mark">
+            <svg width="32" height="32" viewBox="0 0 56 56" fill="none">
+              <circle cx="28" cy="28" r="28" fill="url(#sideGrad)" />
+              <path d="M28 12C19.16 12 12 19.16 12 28C12 36.84 19.16 44 28 44C36.84 44 44 36.84 44 28" stroke="white"
+                stroke-width="2.5" stroke-linecap="round" />
+              <path d="M36 20L44 12M44 12H38M44 12V18" stroke="white" stroke-width="2.5" stroke-linecap="round"
+                stroke-linejoin="round" />
+              <path d="M22 28C22 28 24 32 28 32C32 32 34 28 34 28" stroke="white" stroke-width="2.5"
+                stroke-linecap="round" />
+              <defs>
+                <linearGradient id="sideGrad" x1="0" y1="0" x2="56" y2="56">
+                  <stop offset="0%" stop-color="#10b981" />
+                  <stop offset="100%" stop-color="#065f46" />
+                </linearGradient>
+              </defs>
+            </svg>
+          </div>
+          <div>
+            <div class="sidebar-brand">GREEN MILE</div>
+            <div class="sidebar-net"><span class="dot-live"></span>Polygon Mainnet</div>
+          </div>
+        </div>
+        <button class="sidebar-close" id="sidebarClose" onclick="toggleSidebar()">✕</button>
+      </div>
+
+      <div class="sidebar-user">
+        <div class="user-avatar">NV</div>
+        <div>
+          <div class="user-name">Nguyễn Văn An</div>
+          <div class="user-tier"><span class="badge-gold">● GOLD</span> · KYC ✓</div>
+        </div>
+      </div>
+
+      <nav class="sidebar-nav">
+        <div class="nav-section-label">CỔNG CÁ NHÂN</div>
+        <a class="nav-item active" data-screen="dashboard" onclick="showScreen('dashboard')">
+          <span class="nav-icon">⬡</span><span>Tổng quan</span>
+        </a>
+        <a class="nav-item" data-screen="carbon" onclick="showScreen('carbon')">
+          <span class="nav-icon">🌿</span><span>Carbon & Mint</span>
+        </a>
+        <a class="nav-item" data-screen="ai" onclick="showScreen('ai')">
+          <span class="nav-icon">✦</span><span>AI Advisor</span>
+          <span class="nav-badge">3</span>
+        </a>
+        <a class="nav-item" data-screen="wallet" onclick="showScreen('wallet')">
+          <span class="nav-icon">◈</span><span>Ví & Giao dịch</span>
+        </a>
+        <a class="nav-item" data-screen="impact" onclick="showScreen('impact')">
+          <span class="nav-icon">◉</span><span>Tác động ESG</span>
+        </a>
+        <a class="nav-item" data-screen="profile" onclick="showScreen('profile')">
+          <span class="nav-icon">👤</span><span>Hồ sơ cá nhân</span>
+        </a>
+
+        <div class="nav-section-label">DOANH NGHIỆP</div>
+        <a class="nav-item" data-screen="market" onclick="showScreen('market')">
+          <span class="nav-icon">⟡</span><span>Marketplace</span>
+          <span class="nav-badge live">LIVE</span>
+        </a>
+        <a class="nav-item" data-screen="trade" onclick="showScreen('trade')">
+          <span class="nav-icon">⇄</span><span>Giao dịch B2B</span>
+        </a>
+        <a class="nav-item" data-screen="enterprise" onclick="showScreen('enterprise')">
+          <span class="nav-icon">◫</span><span>Enterprise</span>
+        </a>
+
+        <div class="nav-section-label">DỊCH VỤ XANH</div>
+        <a class="nav-item" data-screen="charging" onclick="showScreen('charging')">
+          <span class="nav-icon">⚡</span><span>Trạm Sạc EV</span>
+        </a>
+        <a class="nav-item" data-screen="admin" onclick="showScreen('admin')">
+          <span class="nav-icon">◩</span><span>Admin Console</span>
+        </a>
+
+        <div class="nav-section-label">NGHIÊN CỨU</div>
+        <a class="nav-item" data-screen="research" onclick="showScreen('research')">
+          <span class="nav-icon">🔬</span><span>Research Insights</span>
+          <span class="nav-badge" style="background:rgba(168,85,247,0.2);color:#a855f7">TAM</span>
+        </a>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="chain-status">
+          <div class="chain-dot"></div>
+          <span>Block #<span id="liveBlockNumber">19,847,231</span> · Gas: 24 gwei · Amoy</span>
+        </div>
+        <div class="theme-toggle">
+          <button class="toggle-btn" onclick="toggleTheme()" id="themeBtn">☾ Dark Mode</button>
+        </div>
+      </div>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <div class="main-wrap">
+      <!-- TOP BAR -->
+      <header class="topbar">
+        <div class="topbar-left">
+          <button class="hamburger" onclick="toggleSidebar()">
+            <span></span><span></span><span></span>
+          </button>
+          <div class="breadcrumb" id="breadcrumb">Tổng quan</div>
+        </div>
+        <div class="topbar-center">
+          <div class="price-ticker" id="priceTicker">
+            <span class="ticker-label">GMT</span>
+            <span class="ticker-price" id="tickerPrice">₫4,250</span>
+            <span class="ticker-change positive" id="tickerChange">▲+2.4%</span>
+            <span class="ticker-sep">|</span>
+            <span class="ticker-label">BTC</span>
+            <span class="ticker-price">₫1.84B</span>
+            <span class="ticker-change positive">▲+1.1%</span>
+            <span class="ticker-sep">|</span>
+            <span class="ticker-label">ETH</span>
+            <span class="ticker-price">₫72.3M</span>
+            <span class="ticker-change negative">▼-0.3%</span>
+          </div>
+        </div>
+        <div class="topbar-right">
+          <button class="icon-btn" onclick="showNotifications()" id="notifBtn">
+            🔔<span class="notif-dot"></span>
+          </button>
+          <div class="topbar-wallet">
+            <div class="wallet-amount"><span id="topbarGmtBalance">4,250</span> <span class="token-sym">GMT</span></div>
+            <div class="wallet-vnd">₫18,062,500</div>
+          </div>
+          <!-- Priority 1: Wallet connect button + status indicator -->
+          <button id="connectWalletBtn" onclick="connectWallet()"
+            style="font-size:11px;padding:5px 12px;border-radius:20px;border:1px solid rgba(16,185,129,0.3);background:rgba(16,185,129,0.08);color:var(--emerald-400);cursor:pointer;font-weight:600;transition:all 0.2s"
+            title="Connect MetaMask">
+            🦊 Connect
+          </button>
+          <div id="walletStatus"
+            style="display:none;align-items:center;gap:6px;font-size:11px;font-weight:700;color:#10b981;background:rgba(16,185,129,0.1);border:1px solid rgba(16,185,129,0.25);padding:5px 12px;border-radius:20px;cursor:pointer"
+            onclick="connectWallet()" title="MetaMask Connected">
+            <span style="width:7px;height:7px;background:#10b981;border-radius:50%;display:inline-block"></span>
+            <span id="walletAddrShort">0x...</span>
+          </div>
+          <div class="topbar-avatar" onclick="showScreen('profile')">NV</div>
+        </div>
+      </header>
+
+      <!-- NOTIFICATION PANEL -->
+      <div class="notif-panel hidden" id="notifPanel">
+        <div class="notif-header">
+          <span>Thông báo</span>
+          <button onclick="showNotifications()">✕</button>
+        </div>
+        <div class="notif-list">
+          <div class="notif-item unread">
+            <div class="notif-icon">🌿</div>
+            <div><strong>Mint thành công!</strong><br />+125 GMT từ chuyến xe đạp 12km</div>
+            <div class="notif-time">2p trước</div>
+          </div>
+          <div class="notif-item unread">
+            <div class="notif-icon">⟡</div>
+            <div><strong>Lệnh khớp!</strong><br />Bán 500 GMT @ ₫4,280</div>
+            <div class="notif-time">15p trước</div>
+          </div>
+          <div class="notif-item unread">
+            <div class="notif-icon">✦</div>
+            <div><strong>AI Insight mới</strong><br />Giá GMT có thể tăng 8% cuối tuần</div>
+            <div class="notif-time">1h trước</div>
+          </div>
+          <div class="notif-item">
+            <div class="notif-icon">⚡</div>
+            <div><strong>Phiên sạc hoàn tất</strong><br />Trạm VinFast Q7 · 42 kWh · ₫168,000</div>
+            <div class="notif-time">3h trước</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SCREENS -->
+      <main class="content" id="content">
+
+        <!-- ===================== SCREEN 1: DASHBOARD ===================== -->
+        <section class="screen active" id="screen-dashboard">
+          <div class="screen-hero">
+            <div class="hero-text">
+              <h1 class="hero-title">Chào buổi chiều, Văn An 👋</h1>
+              <p class="hero-sub">Streak <strong class="green">18 ngày</strong> liên tiếp — bạn đang trong Top 2% người
+                dùng xanh nhất tuần này!</p>
+            </div>
+            <div class="hero-actions">
+              <button class="btn-primary" onclick="showScreen('carbon')">🌿 Log chuyến đi</button>
+              <button class="btn-ghost" onclick="showScreen('market')">⟡ Trade Token</button>
+            </div>
+          </div>
+
+          <!-- KPI CARDS -->
+          <div class="kpi-grid">
+            <div class="kpi-card" data-color="green">
+              <div class="kpi-icon">🌿</div>
+              <div class="kpi-value counter" data-target="4250">0</div>
+              <div class="kpi-label">GMT Token</div>
+              <div class="kpi-trend positive">▲ +125 hôm nay</div>
+            </div>
+            <div class="kpi-card" data-color="teal">
+              <div class="kpi-icon">💨</div>
+              <div class="kpi-value counter" data-target="847" data-suffix="kg">0</div>
+              <div class="kpi-label">CO₂ Tiết kiệm</div>
+              <div class="kpi-trend positive">▲ +12.4kg tuần này</div>
+            </div>
+            <div class="kpi-card" data-color="emerald">
+              <div class="kpi-icon">💰</div>
+              <div class="kpi-value">₫18.06M</div>
+              <div class="kpi-label">Giá trị ví</div>
+              <div class="kpi-trend positive">▲ +2.4% hôm nay</div>
+            </div>
+            <div class="kpi-card" data-color="gold">
+              <div class="kpi-icon">🏆</div>
+              <div class="kpi-value counter" data-target="2847">0</div>
+              <div class="kpi-label">Điểm xanh</div>
+              <div class="kpi-trend">Top 2% · Hạng GOLD</div>
+            </div>
+          </div>
+
+          <!-- MIDDLE ROW -->
+          <div class="dash-mid">
+            <!-- WALLET CARD -->
+            <div class="glass-card wallet-card">
+              <div class="card-header">
+                <span class="card-title">Ví Green Mile</span>
+                <span class="verified-badge">🔗 On-chain</span>
+              </div>
+              <div class="wallet-address">0x3f7a...e9b2 <button class="copy-btn" onclick="copyAddress()">⎘</button>
+              </div>
+              <div class="wallet-balances">
+                <div class="bal-item">
+                  <div class="bal-token">4,250 <span>GMT</span></div>
+                  <div class="bal-vnd">≈ ₫18,062,500</div>
+                </div>
+                <div class="bal-item">
+                  <div class="bal-token">2,150,000 <span>VND</span></div>
+                  <div class="bal-vnd">Tiền mặt sẵn có</div>
+                </div>
+              </div>
+              <div class="wallet-actions">
+                <button class="wallet-btn" onclick="showScreen('wallet')">↑ Nạp</button>
+                <button class="wallet-btn" onclick="showScreen('wallet')">↓ Rút</button>
+                <button class="wallet-btn" onclick="showScreen('wallet')">⇄ Chuyển</button>
+                <button class="wallet-btn" onclick="showScreen('market')">⟡ Trade</button>
+              </div>
+            </div>
+
+            <!-- IMPACT RING -->
+            <div class="glass-card impact-ring-card">
+              <div class="card-header">
+                <span class="card-title">Mục tiêu tháng</span>
+                <span class="card-sub">Tháng 4 · 2026</span>
+              </div>
+              <div class="ring-container">
+                <canvas id="ringChart" width="160" height="160"></canvas>
+                <div class="ring-center">
+                  <div class="ring-pct">78%</div>
+                  <div class="ring-label">hoàn thành</div>
+                </div>
+              </div>
+              <div class="ring-stats">
+                <div class="rstat"><span class="rstat-v green">847kg</span><span class="rstat-l">Đạt được</span></div>
+                <div class="rstat"><span class="rstat-v">1,080kg</span><span class="rstat-l">Mục tiêu</span></div>
+              </div>
+            </div>
+
+            <!-- AI INSIGHTS -->
+            <div class="glass-card ai-insights-card">
+              <div class="card-header">
+                <span class="card-title">✦ AI Insights</span>
+                <span class="ai-live">● LIVE</span>
+              </div>
+              <div class="insight-list">
+                <div class="insight-item insight-up">
+                  <div class="insight-icon">📈</div>
+                  <div class="insight-text">GMT có thể tăng <strong>8-12%</strong> cuối tuần do nhu cầu offset Q2 từ
+                    doanh nghiệp.</div>
+                </div>
+                <div class="insight-item insight-warn">
+                  <div class="insight-icon">⚠️</div>
+                  <div class="insight-text">Giao dịch bất thường phát hiện từ 2 tài khoản. Hệ thống đã khóa tự động.
+                  </div>
+                </div>
+                <div class="insight-item insight-green">
+                  <div class="insight-icon">🎯</div>
+                  <div class="insight-text">Đi thêm <strong>28km</strong> bằng xe đạp để lên hạng PLATINUM và nhận bonus
+                    200 GMT.</div>
+                </div>
+              </div>
+              <button class="btn-ghost full-w" onclick="showScreen('ai')">Xem toàn bộ phân tích →</button>
+            </div>
+          </div>
+
+          <!-- ACTIVITY CHART -->
+          <div class="glass-card chart-card">
+            <div class="card-header">
+              <span class="card-title">Lịch sử CO₂ & Token (30 ngày)</span>
+              <div class="chart-tabs">
+                <button class="chart-tab active" onclick="switchChart('co2',this)">CO₂</button>
+                <button class="chart-tab" onclick="switchChart('token',this)">Token</button>
+                <button class="chart-tab" onclick="switchChart('value',this)">Giá trị</button>
+              </div>
+            </div>
+            <canvas id="activityChart" height="80"></canvas>
+          </div>
+
+          <!-- RECENT TX + LEADERBOARD -->
+          <div class="dash-bottom">
+            <div class="glass-card">
+              <div class="card-header">
+                <span class="card-title">Giao dịch gần đây</span>
+                <button class="btn-link" onclick="showScreen('wallet')">Xem tất cả →</button>
+              </div>
+              <div class="tx-list" id="recentTxList"></div>
+            </div>
+            <div class="glass-card">
+              <div class="card-header">
+                <span class="card-title">🏆 Bảng xếp hạng</span>
+                <span class="card-sub">Tuần này</span>
+              </div>
+              <div class="leaderboard" id="leaderboard"></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ===================== SCREEN 2: CARBON / MOVE-TO-MINT ===================== -->
+        <section class="screen hidden" id="screen-carbon">
+          <div class="screen-title-row">
+            <h2 class="screen-title">🌿 Carbon Hub & Move-to-Mint</h2>
+            <div class="screen-badges">
+              <span class="badge badge-green">AI Verified</span>
+              <span class="badge badge-blue">On-chain</span>
+            </div>
+          </div>
+
+          <div class="carbon-layout">
+            <!-- CALCULATOR -->
+            <div class="glass-card carbon-calc">
+              <h3 class="section-title">Tính CO₂ & Mint Token</h3>
+              <div class="form-group">
+                <label class="form-label">Phương tiện di chuyển</label>
+                <div class="vehicle-grid" id="vehicleGrid">
+                  <button class="vehicle-btn active" data-mode="bicycle" data-factor="0" onclick="selectVehicle(this)">
+                    <span class="v-icon">🚲</span><span class="v-name">Xe đạp</span><span class="v-co2">0g/km</span>
+                  </button>
+                  <button class="vehicle-btn" data-mode="walk" data-factor="0" onclick="selectVehicle(this)">
+                    <span class="v-icon">🚶</span><span class="v-name">Đi bộ</span><span class="v-co2">0g/km</span>
+                  </button>
+                  <button class="vehicle-btn" data-mode="bus" data-factor="68" onclick="selectVehicle(this)">
+                    <span class="v-icon">🚍</span><span class="v-name">Xe buýt</span><span class="v-co2">68g/km</span>
+                  </button>
+                  <button class="vehicle-btn" data-mode="car_ev" data-factor="0" onclick="selectVehicle(this)">
+                    <span class="v-icon">🚗</span><span class="v-name">Ô tô điện (EV)</span><span
+                      class="v-co2">0g/km</span>
+                  </button>
+                  <button class="vehicle-btn" data-mode="moto_ev" data-factor="5" onclick="selectVehicle(this)">
+                    <span class="v-icon">🛵</span><span class="v-name">Xe máy điện</span><span
+                      class="v-co2">5g/km</span>
+                  </button>
+                  <button class="vehicle-btn" data-mode="car_gas" data-factor="120" onclick="selectVehicle(this)">
+                    <span class="v-icon">🚙</span><span class="v-name">Ô tô xăng</span><span
+                      class="v-co2">120g/km</span>
+                  </button>
+                  <button class="vehicle-btn" data-mode="moto_gas" data-factor="120" onclick="selectVehicle(this)">
+                    <span class="v-icon">🏍️</span><span class="v-name">Xe máy xăng</span><span
+                      class="v-co2">120g/km</span>
+                  </button>
+                </div>
+              </div>
+
+              <div class="form-row">
+                <div class="form-group">
+                  <label class="form-label">Quãng đường (km)</label>
+                  <input type="number" class="form-input" id="distanceInput" value="12" min="0.1" max="500" step="0.1"
+                    oninput="calcCO2()" />
+                </div>
+                <div class="form-group" style="padding-top: 10px;">
+                  <label class="form-label" id="currentTransportLabel"
+                    style="color:var(--emerald-400); font-weight: 600; margin-bottom: 8px;">Bạn đang sử dụng: Xe đạp
+                    (0g/km)</label>
+                </div>
+                <div class="form-group">
+                  <label class="form-label" id="replaceTransportLabel">Thay thế cho:</label>
+                  <select class="form-input" id="baselineMode" onchange="calcCO2()">
+                    <option value="120">Xe máy xăng (120g/km)</option>
+                    <option value="120">Ô tô xăng (120g/km)</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="co2-result" id="co2Result">
+                <div class="co2-grid">
+                  <div class="co2-stat">
+                    <div class="co2-val green" id="co2Saved">1,440g</div>
+                    <div class="co2-key">CO₂ tiết kiệm</div>
+                  </div>
+                  <div class="co2-stat">
+                    <div class="co2-val" id="gmtEarned">12 GMT</div>
+                    <div class="co2-key">Token nhận được</div>
+                  </div>
+                  <div class="co2-stat">
+                    <div class="co2-val gold" id="vndEarned">₫51,000</div>
+                    <div class="co2-key">Giá trị ước tính</div>
+                  </div>
+                </div>
+                <div class="ai-score-bar">
+                  <div class="ai-score-label">AI Confidence Score</div>
+                  <div class="score-track">
+                    <div class="score-fill" id="aiScoreFill" style="width:95%"></div>
+                  </div>
+                  <div class="score-pct" id="aiScorePct">95%</div>
+                </div>
+              </div>
+
+              <div class="mint-actions">
+                <button class="btn-primary btn-large" id="mintBtn" onclick="handleMint()">
+                  🌿 Xác nhận &amp; Mint Token
+                </button>
+                <p class="mint-note">⛓ Giao dịch sẽ được ghi nhận on-chain · Gas ≈ 0.0003 MATIC</p>
+              </div>
+            </div>
+
+            <!-- MINT PROGRESS + HISTORY -->
+            <div class="carbon-side">
+              <!-- MINT PROGRESS -->
+              <div class="glass-card mint-progress-card" id="mintProgressCard" style="display:none">
+                <h3 class="section-title">Trạng thái Mint</h3>
+                <div class="mint-steps" id="mintSteps">
+                  <div class="mint-step" id="mstep1">
+                    <div class="step-dot pending"></div>
+                    <div class="step-info">
+                      <div class="step-name">Gửi yêu cầu</div>
+                      <div class="step-sub">Carbon Calculation Service</div>
+                    </div>
+                  </div>
+                  <div class="mint-step" id="mstep2">
+                    <div class="step-dot"></div>
+                    <div class="step-info">
+                      <div class="step-name">AI Verification</div>
+                      <div class="step-sub">Kiểm tra tính xác thực</div>
+                    </div>
+                  </div>
+                  <div class="mint-step" id="mstep3">
+                    <div class="step-dot"></div>
+                    <div class="step-info">
+                      <div class="step-name">Oracle Confirmation</div>
+                      <div class="step-sub">Xác thực dữ liệu ngoài chuỗi</div>
+                    </div>
+                  </div>
+                  <div class="mint-step" id="mstep4">
+                    <div class="step-dot"></div>
+                    <div class="step-info">
+                      <div class="step-name">Smart Contract Mint</div>
+                      <div class="step-sub">GreenToken.sol · Polygon</div>
+                    </div>
+                  </div>
+                  <div class="mint-step" id="mstep5">
+                    <div class="step-dot"></div>
+                    <div class="step-info">
+                      <div class="step-name">Cập nhật ví</div>
+                      <div class="step-sub">Wallet Service</div>
+                    </div>
+                  </div>
+                </div>
+                <div class="tx-hash-box hidden" id="txHashBox">
+                  <div class="tx-hash-label">Transaction Hash</div>
+                  <div class="tx-hash" id="mintTxHash">0x...</div>
+                  <button class="btn-ghost btn-sm" onclick="viewOnChain()">Xem trên Polygonscan ↗</button>
+                </div>
+              </div>
+
+              <!-- CARBON HISTORY -->
+              <div class="glass-card">
+                <div class="card-header">
+                  <span class="card-title">Lịch sử Mint</span>
+                  <span class="badge badge-green">Tổng: 4,250 GMT</span>
+                </div>
+                <div class="carbon-history" id="carbonHistory"></div>
+              </div>
+
+              <!-- BADGES -->
+              <div class="glass-card">
+                <div class="card-header"><span class="card-title">Huy hiệu xanh</span></div>
+                <div class="badge-grid">
+                  <div class="eco-badge earned" title="Đạt 500kg CO₂"><span>🌍</span><small>Earth Saver</small></div>
+                  <div class="eco-badge earned" title="18 ngày liên tiếp"><span>🔥</span><small>18-day Streak</small>
+                  </div>
+                  <div class="eco-badge earned" title="100km xe đạp"><span>🚲</span><small>Cyclist Pro</small></div>
+                  <div class="eco-badge earned" title="10 giao dịch B2B"><span>⟡</span><small>B2B Trader</small></div>
+                  <div class="eco-badge" title="Cần 1000kg"><span>🏔</span><small>1 Ton Club</small></div>
+                  <div class="eco-badge" title="Cần thêm"><span>💎</span><small>Platinum</small></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ===================== SCREEN 3: AI ADVISOR ===================== -->
+        <section class="screen hidden" id="screen-ai">
+          <div class="screen-title-row">
+            <h2 class="screen-title">✦ AI Green Advisor</h2>
+            <div class="screen-badges">
+              <span class="badge badge-purple">GPT-4 Powered</span>
+              <span class="badge badge-green">Real-time Analysis</span>
+            </div>
+          </div>
+
+          <div class="ai-layout">
+            <!-- CHAT -->
+            <div class="glass-card ai-chat-card">
+              <div class="chat-header">
+                <div class="ai-avatar">✦</div>
+                <div>
+                  <div class="ai-name">GreenAI Oracle</div>
+                  <div class="ai-status"><span class="dot-live"></span> Đang phân tích thị trường</div>
+                </div>
+              </div>
+              <div class="chat-messages" id="chatMessages">
+                <div class="chat-msg ai-msg">
+                  <div class="msg-avatar">✦</div>
+                  <div class="msg-bubble">
+                    Xin chào Văn An! Tôi là GreenAI Oracle — trợ lý phân tích carbon thông minh của bạn. <br /><br />
+                    Hôm nay bạn đã tiết kiệm <strong>127g CO₂</strong> từ chuyến đi 12km bằng xe đạp. Dựa trên phân tích
+                    thị trường, đây là thời điểm <strong class="green">tốt để giữ token</strong> — giá GMT có xu hướng
+                    tăng vào cuối tuần!
+                  </div>
+                </div>
+              </div>
+              <div class="chat-quick">
+                <button class="quick-btn" onclick="sendQuick('Giá GMT hôm nay thế nào?')">📈 Giá GMT?</button>
+                <button class="quick-btn" onclick="sendQuick('Khi nào nên bán token?')">💰 Khi nào bán?</button>
+                <button class="quick-btn" onclick="sendQuick('Cách tăng điểm ESG?')">🌿 Tăng ESG?</button>
+                <button class="quick-btn" onclick="sendQuick('Phân tích giao dịch của tôi')">📊 Phân tích GD</button>
+              </div>
+              <div class="chat-input-row">
+                <input type="text" class="chat-input" id="chatInput" placeholder="Hỏi về carbon, token, ESG..."
+                  onkeypress="if(event.key==='Enter') sendChat()" />
+                <button class="chat-send" onclick="sendChat()">▶</button>
+              </div>
+            </div>
+
+            <!-- INSIGHTS PANEL -->
+            <div class="ai-insights-panel">
+              <div class="glass-card insight-card insight-card-up">
+                <div class="ic-header"><span class="ic-icon">📈</span><span class="ic-badge positive">+8.4%</span></div>
+                <div class="ic-title">Dự báo giá GMT</div>
+                <div class="ic-body">Mô hình ML dự đoán GMT sẽ đạt <strong>₫4,600–4,800</strong> vào cuối tuần do nhu
+                  cầu bù đắp carbon Q2 từ các tập đoàn lớn.</div>
+                <div class="ic-meta">Cập nhật 5 phút trước · Độ chính xác 87%</div>
+              </div>
+
+              <div class="glass-card insight-card insight-card-warn">
+                <div class="ic-header"><span class="ic-icon">🛡</span><span class="ic-badge warning">Phát hiện</span>
+                </div>
+                <div class="ic-title">Cảnh báo bảo mật</div>
+                <div class="ic-body">AI phát hiện <strong>2 tài khoản</strong> có pattern giao dịch bất thường
+                  (double-trip submission). Đã tự động lock và báo admin.</div>
+                <div class="ic-meta">Hệ thống đã xử lý · 1 giờ trước</div>
+              </div>
+
+              <div class="glass-card insight-card insight-card-green">
+                <div class="ic-header"><span class="ic-icon">🎯</span><span class="ic-badge neutral">Gợi ý</span></div>
+                <div class="ic-title">Tối ưu hành vi xanh</div>
+                <div class="ic-body">Bắt đầu tuần bằng metro thay xe máy: <strong>+340 GMT/tuần</strong> và giảm thêm
+                  <strong>2.4kg CO₂/ngày</strong>.</div>
+                <div class="ic-meta">Dựa trên lịch sử 30 ngày của bạn</div>
+              </div>
+
+              <div class="glass-card insight-card">
+                <div class="ic-header"><span class="ic-icon">📊</span><span class="ic-badge neutral">ESG</span></div>
+                <div class="ic-title">Tóm tắt ESG Tháng 4</div>
+                <div class="ic-body">Bạn đã đóng góp <strong>847kg CO₂</strong> tiết kiệm, tương đương <strong>47 cây
+                    xanh</strong> trồng mới. ESG Score: <strong class="green">A+</strong></div>
+                <div class="ic-meta">Báo cáo đầy đủ sẵn sàng tải xuống</div>
+              </div>
+
+              <!-- FRAUD DETECTION -->
+              <div class="glass-card">
+                <div class="card-header"><span class="card-title">🛡 Fraud Detection AI</span></div>
+                <div class="fraud-stats">
+                  <div class="fraud-item">
+                    <div class="fraud-label">Điểm tin cậy của bạn</div>
+                    <div class="fraud-score green">99.2 / 100</div>
+                  </div>
+                  <div class="fraud-item">
+                    <div class="fraud-label">Giao dịch được xác thực</div>
+                    <div class="fraud-score">247 / 247</div>
+                  </div>
+                  <div class="fraud-item">
+                    <div class="fraud-label">Cảnh báo phát hiện hệ thống</div>
+                    <div class="fraud-score warning-color">12 tài khoản / 7 ngày</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ===================== SCREEN 4: WALLET ===================== -->
+        <section class="screen hidden" id="screen-wallet">
+          <div class="screen-title-row">
+            <h2 class="screen-title">◈ Ví & Thanh toán</h2>
+            <div class="screen-badges">
+              <span class="badge badge-green">KYC Verified ✓</span>
+              <span class="badge badge-blue">MPC Wallet</span>
+            </div>
+          </div>
+
+          <div class="wallet-layout">
+            <!-- MAIN WALLET CARD -->
+            <div class="wallet-hero-card">
+              <div class="whc-bg"></div>
+              <div class="whc-content">
+                <div class="whc-top">
+                  <div>
+                    <div class="whc-label">Tổng giá trị ví</div>
+                    <div class="whc-total">₫20,212,500</div>
+                  </div>
+                  <div class="whc-qr" onclick="showQRModal()">
+                    <div class="qr-placeholder">
+                      <div class="qr-icon">⬛</div>
+                      <div>QR</div>
+                    </div>
+                  </div>
+                </div>
+                <div class="whc-addr">0x3f7a8c2d1e9b4f6a3512c8d9e0f1a2b3c4d5e6f7e9b2</div>
+                <div class="whc-balances">
+                  <div class="whc-bal">
+                    <div class="wb-amount">4,250 GMT</div>
+                    <div class="wb-usd">≈ ₫18,062,500</div>
+                    <div class="wb-label">Green Mile Token</div>
+                  </div>
+                  <div class="whc-divider"></div>
+                  <div class="whc-bal">
+                    <div class="wb-amount">₫2,150,000</div>
+                    <div class="wb-usd">Tiền mặt VND</div>
+                    <div class="wb-label">Sẵn có</div>
+                  </div>
+                </div>
+                <div class="whc-actions">
+                  <button class="wha-btn" onclick="showModal('depositModal')"><span>↓</span>Nạp tiền</button>
+                  <button class="wha-btn" onclick="showModal('withdrawModal')"><span>↑</span>Rút tiền</button>
+                  <button class="wha-btn" onclick="showModal('transferModal')"><span>⇄</span>Chuyển</button>
+                  <button class="wha-btn" onclick="showScreen('market')"><span>⟡</span>Giao dịch</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- SETTLEMENT STATUS -->
+            <div class="glass-card settlement-card">
+              <div class="card-header"><span class="card-title">Trạng thái Settlement</span></div>
+              <div class="settlement-items" id="settlementItems"></div>
+            </div>
+
+            <!-- TX HISTORY -->
+            <div class="glass-card tx-history-card">
+              <div class="card-header">
+                <span class="card-title">Lịch sử giao dịch</span>
+                <div class="tx-filters">
+                  <button class="tx-filter active" onclick="filterTx('all',this)">Tất cả</button>
+                  <button class="tx-filter" onclick="filterTx('mint',this)">Mint</button>
+                  <button class="tx-filter" onclick="filterTx('trade',this)">Trade</button>
+                  <button class="tx-filter" onclick="filterTx('charge',this)">Sạc xe</button>
+                </div>
+              </div>
+              <div class="ledger-table-wrap">
+                <table class="ledger-table" id="ledgerTable">
+                  <thead>
+                    <tr>
+                      <th>Loại</th>
+                      <th>Mô tả</th>
+                      <th>Số lượng</th>
+                      <th>Giá trị VND</th>
+                      <th>Trạng thái</th>
+                      <th>Thời gian</th>
+                      <th>TX Hash</th>
+                    </tr>
+                  </thead>
+                  <tbody id="ledgerBody"></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ===================== SCREEN 5: MARKETPLACE ===================== -->
+        <section class="screen hidden" id="screen-market">
+          <div class="screen-title-row">
+            <h2 class="screen-title">⟡ Carbon Marketplace</h2>
+            <div class="screen-badges">
+              <span class="badge badge-live">● LIVE</span>
+              <span class="badge badge-blue">Order Book</span>
+              <span class="badge badge-green">B2B KYC Required</span>
+            </div>
+          </div>
+
+          <div class="market-layout">
+            <!-- PRICE HEADER -->
+            <div class="market-price-header">
+              <div class="mprice-main">
+                <div class="mprice-token">GMT / VND</div>
+                <div class="mprice-value" id="marketPrice">₫4,250</div>
+                <div class="mprice-change positive">▲ +102 (▲2.46%)</div>
+              </div>
+              <div class="mprice-stats">
+                <div class="mps">
+                  <div class="mps-v">₫4,380</div>
+                  <div class="mps-l">24h Cao</div>
+                </div>
+                <div class="mps">
+                  <div class="mps-v">₫3,980</div>
+                  <div class="mps-l">24h Thấp</div>
+                </div>
+                <div class="mps">
+                  <div class="mps-v">127,430</div>
+                  <div class="mps-l">Khối lượng 24h</div>
+                </div>
+                <div class="mps">
+                  <div class="mps-v">₫541M</div>
+                  <div class="mps-l">Vốn hóa</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="market-body">
+              <!-- ORDER BOOK -->
+              <div class="glass-card orderbook-card">
+                <div class="card-header"><span class="card-title">Sổ lệnh</span><span class="ob-spread">Spread:
+                    ₫15</span></div>
+                <div class="ob-headers"><span>Giá (VND)</span><span>Khối lượng</span><span>Tổng</span></div>
+                <div class="ob-asks" id="obAsks"></div>
+                <div class="ob-mid">
+                  <span class="ob-mid-price" id="obMidPrice">₫4,250</span>
+                  <span class="ob-mid-label">Giá thị trường</span>
+                </div>
+                <div class="ob-bids" id="obBids"></div>
+              </div>
+
+              <!-- TRADE FORM -->
+              <div class="glass-card trade-form-card">
+                <div class="trade-tabs">
+                  <button class="trade-tab buy-tab active" id="buyTab" onclick="switchTradeTab('buy')">Mua GMT</button>
+                  <button class="trade-tab sell-tab" id="sellTab" onclick="switchTradeTab('sell')">Bán GMT</button>
+                </div>
+                <div id="tradeFormContent">
+                  <div class="form-group">
+                    <label class="form-label">Loại lệnh</label>
+                    <select class="form-input" id="orderType">
+                      <option>Lệnh thị trường (Market)</option>
+                      <option>Lệnh giới hạn (Limit)</option>
+                      <option>Lệnh dừng (Stop)</option>
+                    </select>
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label">Giá (VND)</label>
+                    <input type="number" class="form-input" id="orderPrice" value="4250" oninput="calcOrderTotal()" />
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label">Số lượng (GMT)</label>
+                    <div class="input-with-max">
+                      <input type="number" class="form-input" id="orderQty" value="100" oninput="calcOrderTotal()" />
+                      <button class="max-btn" onclick="setMax()">MAX</button>
+                    </div>
+                    <div class="qty-shortcuts">
+                      <button onclick="setPct(25)">25%</button>
+                      <button onclick="setPct(50)">50%</button>
+                      <button onclick="setPct(75)">75%</button>
+                      <button onclick="setPct(100)">100%</button>
+                    </div>
+                  </div>
+                  <div class="order-summary">
+                    <div class="os-row"><span>Tổng cộng</span><span id="orderTotal">₫425,000</span></div>
+                    <div class="os-row"><span>Phí giao dịch (0.1%)</span><span id="orderFee">₫425</span></div>
+                    <div class="os-row"><span>Escrow giữ</span><span id="orderEscrow">₫425,425</span></div>
+                  </div>
+                  <button class="btn-primary full-w btn-large buy-btn" id="placeOrderBtn" onclick="placeOrder()">
+                    Đặt lệnh Mua
+                  </button>
+                </div>
+              </div>
+
+              <!-- PRICE CHART -->
+              <div class="glass-card price-chart-card">
+                <div class="card-header">
+                  <span class="card-title">Biểu đồ giá GMT</span>
+                  <div class="chart-tabs">
+                    <button class="chart-tab active">1H</button>
+                    <button class="chart-tab">1D</button>
+                    <button class="chart-tab">1W</button>
+                    <button class="chart-tab">1M</button>
+                  </div>
+                </div>
+                <canvas id="priceChart" height="120"></canvas>
+              </div>
+            </div>
+
+            <!-- RECENT TRADES -->
+            <div class="glass-card recent-trades-card">
+              <div class="card-header"><span class="card-title">Giao dịch gần đây</span></div>
+              <div class="rt-list" id="recentTrades"></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ===================== SCREEN 6: TRADE DETAIL / ESCROW ===================== -->
+        <section class="screen hidden" id="screen-trade">
+          <div class="screen-title-row">
+            <h2 class="screen-title">⇄ Chi tiết Giao dịch B2B</h2>
+            <div class="screen-badges">
+              <span class="badge badge-blue">Escrow Protected</span>
+              <span class="badge badge-green">Smart Contract</span>
+            </div>
+          </div>
+
+          <div class="trade-layout">
+            <!-- ACTIVE ORDERS -->
+            <div class="glass-card">
+              <div class="card-header"><span class="card-title">Lệnh đang mở</span></div>
+              <div class="active-orders" id="activeOrders"></div>
+            </div>
+
+            <!-- ESCROW STATUS -->
+            <div class="glass-card escrow-card">
+              <div class="card-header">
+                <span class="card-title">🔒 Trạng thái Escrow</span>
+                <span class="badge badge-yellow">CarbonEscrow.sol</span>
+              </div>
+              <div class="escrow-items" id="escrowItems"></div>
+            </div>
+
+            <!-- SETTLEMENT LOG -->
+            <div class="glass-card">
+              <div class="card-header"><span class="card-title">📋 Settlement Log</span><span
+                  class="badge badge-blue">On-chain</span></div>
+              <div class="settlement-log" id="settlementLog"></div>
+            </div>
+
+            <!-- WITHDRAWAL FORM -->
+            <div class="glass-card withdrawal-card">
+              <h3 class="section-title">Rút tiền Doanh nghiệp</h3>
+              <div class="form-group">
+                <label class="form-label">Số tiền rút (VND)</label>
+                <input type="number" class="form-input" id="withdrawAmount" placeholder="Tối thiếu ₫1,000,000"
+                  value="5000000" />
+              </div>
+              <div class="form-group">
+                <label class="form-label">Ngân hàng thụ hưởng</label>
+                <select class="form-input">
+                  <option>Techcombank — ****4521 (Công ty ABC)</option>
+                  <option>VCB — ****8823</option>
+                </select>
+              </div>
+              <div class="withdrawal-info">
+                <div class="wi-row"><span>Số dư khả dụng</span><span class="green">₫28,750,000</span></div>
+                <div class="wi-row"><span>Phí rút (0.2%)</span><span>₫10,000</span></div>
+                <div class="wi-row"><span>Thực nhận</span><span class="bold">₫4,990,000</span></div>
+                <div class="wi-row"><span>Thời gian xử lý</span><span>T+1 ngày làm việc</span></div>
+              </div>
+              <button class="btn-primary full-w" onclick="startWithdrawal()">Yêu cầu rút tiền</button>
+            </div>
+
+            <!-- Priority 3: B2B Settlement Simulation Card -->
+            <div class="glass-card" style="border:1px solid rgba(16,185,129,0.2)">
+              <h3 class="section-title" style="margin-bottom:12px">🔒 B2B Settlement — Escrow</h3>
+              <p style="font-size:12px;color:var(--text-muted);margin-bottom:14px;line-height:1.7">
+                Quy trình thanh toán B2B với cơ chế Escrow multi-signature. 4 bước xử lý an toàn trên blockchain Polygon.
+              </p>
+              <div style="background:var(--surface);border-radius:10px;padding:12px;margin-bottom:14px;font-size:12px">
+                <div style="display:flex;justify-content:space-between;margin-bottom:6px">
+                  <span style="color:var(--text-muted)">Đối tác</span>
+                  <span style="font-weight:600">VinGroup ESG Fund</span>
+                </div>
+                <div style="display:flex;justify-content:space-between;margin-bottom:6px">
+                  <span style="color:var(--text-muted)">Số GMT</span>
+                  <span style="font-weight:700;color:var(--emerald-400)">500 GMT</span>
+                </div>
+                <div style="display:flex;justify-content:space-between">
+                  <span style="color:var(--text-muted)">Giá trị</span>
+                  <span style="font-weight:600">₫2,125,000</span>
+                </div>
+              </div>
+              <button class="btn-primary full-w" id="settlementBtn" onclick="simulateEscrow()"
+                style="background:linear-gradient(135deg,#065f46,#059669);letter-spacing:0.3px">
+                🔒 Bắt đầu B2B Settlement
+              </button>
+            </div>
+          </div>
+        </section>
+
+        <!-- ===================== SCREEN 7: IMPACT DASHBOARD ===================== -->
+        <section class="screen hidden" id="screen-impact">
+          <div class="screen-title-row">
+            <h2 class="screen-title">◉ Tác động ESG & Phân tích</h2>
+            <div class="screen-badges">
+              <span class="badge badge-green">ESG Score: A+</span>
+              <span class="badge badge-blue">Báo cáo tháng 4</span>
+            </div>
+          </div>
+
+          <div class="impact-layout">
+            <!-- ESG KPIS -->
+            <div class="esg-kpis">
+              <div class="esg-kpi esg-e">
+                <div class="esg-letter">E</div>
+                <div class="esg-score">94</div>
+                <div class="esg-name">Environmental</div>
+                <div class="esg-bar">
+                  <div class="esg-fill" style="width:94%"></div>
+                </div>
+              </div>
+              <div class="esg-kpi esg-s">
+                <div class="esg-letter">S</div>
+                <div class="esg-score">81</div>
+                <div class="esg-name">Social</div>
+                <div class="esg-bar">
+                  <div class="esg-fill" style="width:81%"></div>
+                </div>
+              </div>
+              <div class="esg-kpi esg-g">
+                <div class="esg-letter">G</div>
+                <div class="esg-score">88</div>
+                <div class="esg-name">Governance</div>
+                <div class="esg-bar">
+                  <div class="esg-fill" style="width:88%"></div>
+                </div>
+              </div>
+              <div class="esg-kpi esg-total">
+                <div class="esg-letter">A+</div>
+                <div class="esg-score">88</div>
+                <div class="esg-name">Tổng ESG Score</div>
+                <div class="esg-bar">
+                  <div class="esg-fill" style="width:88%"></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- CHARTS ROW -->
+            <div class="impact-charts">
+              <div class="glass-card">
+                <div class="card-header"><span class="card-title">CO₂ Tiết kiệm theo tháng</span></div>
+                <canvas id="co2MonthChart" height="100"></canvas>
+              </div>
+              <div class="glass-card">
+                <div class="card-header"><span class="card-title">Phân bổ phương tiện</span></div>
+                <canvas id="modeChart" height="100"></canvas>
+              </div>
+            </div>
+
+            <!-- EQUIVALENTS -->
+            <div class="glass-card equiv-card">
+              <div class="card-header"><span class="card-title">847kg CO₂ tương đương với...</span></div>
+              <div class="equiv-grid">
+                <div class="equiv-item">
+                  <div class="eq-icon">🌳</div>
+                  <div class="eq-value">47</div>
+                  <div class="eq-label">Cây xanh trồng 1 năm</div>
+                </div>
+                <div class="equiv-item">
+                  <div class="eq-icon">✈️</div>
+                  <div class="eq-value">1.4</div>
+                  <div class="eq-label">Chuyến bay Hà Nội–TP.HCM</div>
+                </div>
+                <div class="equiv-item">
+                  <div class="eq-icon">🏠</div>
+                  <div class="eq-value">3.2</div>
+                  <div class="eq-label">Tháng điện gia đình</div>
+                </div>
+                <div class="equiv-item">
+                  <div class="eq-icon">🚗</div>
+                  <div class="eq-value">4,200</div>
+                  <div class="eq-label">Km xe hơi không đi</div>
+                </div>
+                <div class="equiv-item">
+                  <div class="eq-icon">💧</div>
+                  <div class="eq-value">12,000</div>
+                  <div class="eq-label">Chai nhựa không sản xuất</div>
+                </div>
+                <div class="equiv-item">
+                  <div class="eq-icon">⚡</div>
+                  <div class="eq-value">847</div>
+                  <div class="eq-label">kWh điện sạch tương đương</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- TREND CHART -->
+            <div class="glass-card">
+              <div class="card-header">
+                <span class="card-title">Xu hướng Token & Giá trị (12 tháng)</span>
+                <button class="btn-ghost btn-sm">Tải báo cáo ESG PDF</button>
+              </div>
+              <canvas id="trendChart" height="80"></canvas>
+            </div>
+          </div>
+        </section>
+
+        <!-- ===================== SCREEN 8: CHARGING ===================== -->
+        <section class="screen hidden" id="screen-charging">
+          <div class="screen-title-row">
+            <h2 class="screen-title">⚡ Trạm Sạc EV — Việt Nam</h2>
+            <div class="screen-badges">
+              <span class="badge badge-green" id="activeStationCount">12 Trạm Active</span>
+              <span class="badge badge-blue">Leaflet Maps</span>
+              <span class="badge badge-purple">Token Payment</span>
+            </div>
+          </div>
+
+          <div class="charging-layout">
+            <!-- REAL MAP CARD -->
+            <div class="glass-card map-card">
+              <!-- MAP TOOLBAR -->
+              <div class="map-toolbar">
+                <div class="map-search-wrap">
+                  <span class="map-search-icon">🔍</span>
+                  <input type="text" class="map-search-input" id="mapSearchInput"
+                    placeholder="Tìm trạm sạc... (TP.HCM, Hà Nội, Đà Nẵng)" oninput="filterMapStations(this.value)" />
+                </div>
+                <div class="map-toolbar-actions">
+                  <button class="map-tool-btn" onclick="locateUser()" title="Vị trí của tôi">📍</button>
+                  <button class="map-tool-btn" onclick="resetMapView()" title="Xem toàn Việt Nam">🆻🇳</button>
+                  <button class="map-tool-btn" onclick="toggleMapLayer()" title="Đổi nền bản đồ">🌏</button>
+                </div>
+              </div>
+
+              <!-- FILTER CHIPS -->
+              <div class="map-filter-chips">
+                <button class="filter-chip active" onclick="filterChip('all',this)">↺ Tất cả</button>
+                <button class="filter-chip" onclick="filterChip('available',this)">🟢 Sẵn sàng</button>
+                <button class="filter-chip" onclick="filterChip('busy',this)">🟠 Bận</button>
+                <button class="filter-chip" onclick="filterChip('dc',this)">⚡ DC Fast</button>
+                <button class="filter-chip" onclick="filterChip('ac',this)">&#x1F50C; AC</button>
+                <button class="filter-chip map-stats-chip">
+                  <span id="mapStatAvail" class="green">0</span> sẵn &nbsp;·&nbsp;
+                  <span id="mapStatBusy" style="color:#f97316">0</span> bận
+                </button>
+              </div>
+
+              <!-- LEAFLET MAP CONTAINER -->
+              <div id="leafletMap"></div>
+            </div>
+
+            <div class="charging-side">
+              <div class="glass-card station-info-card" id="stationInfoCard">
+                <div class="station-selected" id="stationSelected">
+                  <div class="station-hdr">
+                    <div class="station-name" id="stationName">VinFast Quận 7</div>
+                    <span class="station-status available-badge" id="stationStatusBadge">● Sẵn sàng</span>
+                  </div>
+                  <div class="station-details">
+                    <div class="sd-item"><span>📍</span><span id="stationAddr">48 Nguyễn Thị Thập, Q7</span></div>
+                    <div class="sd-item"><span>⚡</span><span id="stationPower">DC Fast — 120kW · 6 cổng còn trống</span>
+                    </div>
+                    <div class="sd-item"><span>💰</span><span id="stationPrice">₫4,000/kWh hoặc 1 GMT/kWh</span></div>
+                    <div class="sd-item"><span>⏰</span><span id="stationHours">06:00 – 23:00</span></div>
+                    <div class="sd-item"><span>⭐</span><span id="stationRating">4.8/5 (247 đánh giá)</span></div>
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label">Phương thức thanh toán</label>
+                    <div class="payment-methods">
+                      <button class="pm-btn active" id="pmToken" onclick="selectPM('token',this)">⟡ GMT Token</button>
+                      <button class="pm-btn" id="pmVND" onclick="selectPM('vnd',this)">₫ VND</button>
+                      <button class="pm-btn" id="pmMomo" onclick="selectPM('momo',this)">📱 MoMo</button>
+                    </div>
+                  </div>
+                  <div class="charge-estimate" id="chargeEstimate">
+                    <div class="ce-row"><span>Ước tính 40kWh</span><span class="green">40 GMT</span></div>
+                    <div class="ce-row"><span>Tương đương</span><span>₫170,000</span></div>
+                    <div class="ce-row"><span>Carbon offset</span><span class="green">+8 GMT bonus</span></div>
+                  </div>
+                  <button class="btn-primary full-w" onclick="startCharging()">⚡ Bắt đầu sạc</button>
+                </div>
+              </div>
+
+              <!-- CHARGING SESSION -->
+              <div class="glass-card charging-session hidden" id="chargingSession">
+                <div class="session-active">
+                  <div class="session-icon">⚡</div>
+                  <div class="session-title">Đang sạc...</div>
+                  <div class="session-progress-ring">
+                    <canvas id="sessionRing" width="120" height="120"></canvas>
+                    <div class="session-ring-center" id="sessionPct">0%</div>
+                  </div>
+                  <div class="session-stats">
+                    <div class="ss-item">
+                      <div class="ss-v" id="sessionKwh">0.0 kWh</div>
+                      <div class="ss-l">Đã sạc</div>
+                    </div>
+                    <div class="ss-item">
+                      <div class="ss-v" id="sessionTime">00:00</div>
+                      <div class="ss-l">Thời gian</div>
+                    </div>
+                    <div class="ss-item">
+                      <div class="ss-v" id="sessionCost">0 GMT</div>
+                      <div class="ss-l">Chi phí</div>
+                    </div>
+                  </div>
+                  <button class="btn-danger" onclick="stopCharging()">⏹ Dừng sạc</button>
+                </div>
+              </div>
+
+              <!-- NEARBY STATIONS LIST -->
+              <div class="glass-card">
+                <div class="card-header"><span class="card-title">Trạm gần đây</span></div>
+                <div class="stations-list" id="stationsList"></div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ===================== SCREEN 9: ENTERPRISE ===================== -->
+        <section class="screen hidden" id="screen-enterprise">
+          <div class="screen-title-row">
+            <h2 class="screen-title">◫ Enterprise Console</h2>
+            <div class="screen-badges">
+              <span class="badge badge-gold">B2B Verified</span>
+              <span class="badge badge-green">ESG Reporting</span>
+            </div>
+          </div>
+          <div class="enterprise-layout">
+            <!-- ENTERPRISE KPIs -->
+            <div class="ent-kpis">
+              <div class="glass-card ent-kpi">
+                <div class="ek-icon">⟡</div>
+                <div class="ek-value">128,400 GMT</div>
+                <div class="ek-label">Tổng token nắm giữ</div>
+                <div class="ek-sub">≈ ₫545,700,000</div>
+              </div>
+              <div class="glass-card ent-kpi">
+                <div class="ek-icon">💰</div>
+                <div class="ek-value">₫28.75M</div>
+                <div class="ek-label">Số dư khả dụng</div>
+                <div class="ek-sub">Sẵn sàng rút</div>
+              </div>
+              <div class="glass-card ent-kpi">
+                <div class="ek-icon">🔒</div>
+                <div class="ek-value">₫12.3M</div>
+                <div class="ek-label">Đang Escrow</div>
+                <div class="ek-sub">3 giao dịch chờ</div>
+              </div>
+              <div class="glass-card ent-kpi">
+                <div class="ek-icon">📊</div>
+                <div class="ek-value">2,847 tCO₂</div>
+                <div class="ek-label">Đã offset năm nay</div>
+                <div class="ek-sub">Mục tiêu: 5,000 tCO₂</div>
+              </div>
+            </div>
+
+            <!-- B2B TABS -->
+            <div class="glass-card ent-main">
+              <div class="ent-tabs">
+                <button class="ent-tab active" onclick="switchEntTab('orders',this)">Lệnh B2B</button>
+                <button class="ent-tab" onclick="switchEntTab('escrow',this)">Escrow</button>
+                <button class="ent-tab" onclick="switchEntTab('esg',this)">Báo cáo ESG</button>
+                <button class="ent-tab" onclick="switchEntTab('audit',this)">Audit Trail</button>
+              </div>
+              <div id="entTabContent"></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ===================== SCREEN 10: ADMIN ===================== -->
+        <section class="screen hidden" id="screen-admin">
+          <div class="screen-title-row">
+            <h2 class="screen-title">◩ Admin & Compliance</h2>
+            <div class="screen-badges">
+              <span class="badge badge-red">SUPER ADMIN</span>
+              <span class="badge badge-blue">System Control</span>
+            </div>
+          </div>
+          <div class="admin-layout">
+            <!-- SYSTEM KPIs -->
+            <div class="admin-kpis">
+              <div class="glass-card admin-kpi">
+                <div class="ak-icon">👥</div>
+                <div class="ak-value counter" data-target="48291">0</div>
+                <div class="ak-label">Tổng người dùng</div>
+              </div>
+              <div class="glass-card admin-kpi">
+                <div class="ak-icon">⟡</div>
+                <div class="ak-value">12,847,000</div>
+                <div class="ak-label">GMT Lưu hành</div>
+              </div>
+              <div class="glass-card admin-kpi">
+                <div class="ak-icon">🏢</div>
+                <div class="ak-value counter" data-target="284">0</div>
+                <div class="ak-label">Doanh nghiệp KYC</div>
+              </div>
+              <div class="glass-card admin-kpi">
+                <div class="ak-icon">⚠️</div>
+                <div class="ak-value warning-color">12</div>
+                <div class="ak-label">Cảnh báo hôm nay</div>
+              </div>
+            </div>
+
+            <!-- ADMIN TABS -->
+            <div class="glass-card admin-main">
+              <div class="admin-tabs">
+                <button class="admin-tab active" onclick="switchAdminTab('kyc',this)">KYC Queue</button>
+                <button class="admin-tab" onclick="switchAdminTab('supply',this)">Token Supply</button>
+                <button class="admin-tab" onclick="switchAdminTab('fraud',this)">Fraud Alerts</button>
+                <button class="admin-tab" onclick="switchAdminTab('audit',this)">Audit Log</button>
+              </div>
+              <div id="adminTabContent"></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ===================== SCREEN 12: RESEARCH INSIGHTS ===================== -->
+        <section class="screen hidden" id="screen-research">
+          <div class="screen-title-row">
+            <h2 class="screen-title">🔬 Research Insights — TAM / UTAUT / ESG</h2>
+            <div class="screen-badges">
+              <span class="badge badge-purple">Học thuật</span>
+              <span class="badge badge-green">N=120</span>
+              <span class="badge badge-blue">SmartPLS 4.0</span>
+            </div>
+          </div>
+
+          <!-- BLOCKCHAIN NETWORK PROOF BANNER -->
+          <div class="blockchain-proof-banner">
+            <div class="bpb-left">
+              <div class="bpb-dot"></div>
+              <div>
+                <div class="bpb-title">⛓ Polygon Amoy Testnet — Kết nối đang hoạt động</div>
+                <div class="bpb-sub">Contract GMT: <span class="bpb-addr">0x4E2a2B31B55e20B58513C7F3D4FC8F90e19Af832</span></div>
+              </div>
+            </div>
+            <div class="bpb-right">
+              <a href="https://amoy.polygonscan.com/address/0x4E2a2B31B55e20B58513C7F3D4FC8F90e19Af832" target="_blank" class="bpb-link">🔗 Xem Contract trên Polygonscan ↗</a>
+              <a href="https://amoy.polygonscan.com" target="_blank" class="bpb-link">🌐 Amoy Explorer ↗</a>
+            </div>
+          </div>
+
+          <!-- RESEARCH META -->
+          <div class="glass-card research-meta-card">
+            <div class="card-header">
+              <span class="card-title">📋 Thông tin nghiên cứu</span>
+              <span class="badge badge-purple">Tháng 1–3/2026</span>
+            </div>
+            <div id="researchMetaSummary"></div>
+          </div>
+
+          <!-- CHARTS ROW 1: UTAUT + TAM -->
+          <div class="research-charts-row">
+            <div class="glass-card">
+              <div class="card-header">
+                <span class="card-title">📡 UTAUT — Mô hình chấp nhận công nghệ hợp nhất</span>
+                <span class="badge badge-blue">Venkatesh, 2003</span>
+              </div>
+              <div style="max-width: 420px; margin: 0 auto;">
+                <canvas id="utautRadarChart" height="300"></canvas>
+              </div>
+              <div class="chart-note">
+                Tất cả 6 nhân tố đều vượt ngưỡng chấp nhận 4.0 · Cronbach α = 0.91
+              </div>
+            </div>
+            <div class="glass-card">
+              <div class="card-header">
+                <span class="card-title">📊 TAM — Mô hình chấp nhận công nghệ</span>
+                <span class="badge badge-green">Davis, 1989</span>
+              </div>
+              <canvas id="tamBarChart" height="200"></canvas>
+              <div class="chart-note">
+                PU (Mean=5.82) là nhân tố ảnh hưởng lớn nhất đến ý định sử dụng · AVE &gt; 0.50
+              </div>
+            </div>
+          </div>
+
+          <!-- SEM PATH TABLE -->
+          <div class="glass-card">
+            <div class="card-header">
+              <span class="card-title">🔗 SEM — Hệ số đường dẫn (Path Coefficients)</span>
+              <span class="badge badge-blue">CB-SEM · SmartPLS 4.0</span>
+            </div>
+            <div class="ledger-table-wrap">
+              <table class="ledger-table">
+                <thead>
+                  <tr>
+                    <th>Giả thuyết</th>
+                    <th>β (Hệ số Path)</th>
+                    <th>p-value</th>
+                    <th>Kết quả</th>
+                  </tr>
+                </thead>
+                <tbody id="semPathTable"></tbody>
+              </table>
+            </div>
+            <div class="chart-note">
+              H4: ATT → BI có hệ số cao nhất (β=0.67, p&lt;0.001) → Thái độ là yếu tố quyết định ý định dùng app
+            </div>
+          </div>
+
+          <!-- CHARTS ROW 2: SCATTER + ESG TREND -->
+          <div class="research-charts-row">
+            <div class="glass-card">
+              <div class="card-header">
+                <span class="card-title">↗ TAM Score vs. CO₂ Tiết kiệm</span>
+                <span class="badge badge-green">R²=0.61</span>
+              </div>
+              <canvas id="semScatterChart" height="220"></canvas>
+              <div class="chart-note">
+                Tương quan dương mạnh (r=0.78, p&lt;0.001) — Người có TAM score cao tiết kiệm nhiều CO₂ hơn
+              </div>
+            </div>
+            <div class="glass-card">
+              <div class="card-header">
+                <span class="card-title">📈 Xu hướng ESG Score theo tháng</span>
+                <span class="badge badge-gold">T10/2025 – T4/2026</span>
+              </div>
+              <canvas id="esgTrendChart" height="220"></canvas>
+              <div class="chart-note">
+                E+S+G đồng loạt tăng — User growth theo cấp số nhân (×38 trong 7 tháng)
+              </div>
+            </div>
+          </div>
+
+          <!-- RAW SURVEY TABLE -->
+          <div class="glass-card">
+            <div class="card-header">
+              <span class="card-title">📝 Dữ liệu khảo sát thô (trích mẫu 10/120)</span>
+              <span class="badge badge-purple">Raw Data</span>
+            </div>
+            <div class="ledger-table-wrap">
+              <table class="ledger-table survey-table">
+                <thead>
+                  <tr>
+                    <th>ID</th><th>Tuổi</th><th>GT</th><th>Nghề</th>
+                    <th title="Perceived Usefulness">PU</th>
+                    <th title="Perceived Ease of Use">PEOU</th>
+                    <th title="Attitude">ATT</th>
+                    <th title="Behavioral Intention">BI</th>
+                    <th title="Trust">TR</th>
+                    <th>CO₂ (g)</th>
+                    <th>GMT</th>
+                    <th>Ngày TĐ</th>
+                  </tr>
+                </thead>
+                <tbody id="surveyRawTable"></tbody>
+              </table>
+            </div>
+            <div class="chart-note">
+              Dữ liệu thu thập qua Google Forms · Thang đo Likert 1-7 (PU, PEOU, ATT, BI, TR)
+              · Verified bởi app blockchain hash on Amoy testnet
+            </div>
+          </div>
+
+          <!-- ESG IMPACT SELF-ASSESSMENT -->
+          <div class="glass-card">
+            <div class="card-header">
+              <span class="card-title">🌍 Tự đánh giá ESG Impact (Likert 1-5)</span>
+              <span class="badge badge-green">N=120</span>
+            </div>
+            <div class="esg-assess-grid">
+              <div class="esg-assess-item">
+                <div class="ea-label">🌿 Tác động Môi trường</div>
+                <div class="ea-bar"><div class="ea-fill" style="width:84%"></div></div>
+                <div class="ea-score">Mean = 4.21 / 5.0</div>
+              </div>
+              <div class="esg-assess-item">
+                <div class="ea-label">🤝 Trách nhiệm Xã hội</div>
+                <div class="ea-bar"><div class="ea-fill" style="width:77%;background:#38bdf8"></div></div>
+                <div class="ea-score">Mean = 3.84 / 5.0</div>
+              </div>
+              <div class="esg-assess-item">
+                <div class="ea-label">⚖️ Quản trị minh bạch</div>
+                <div class="ea-bar"><div class="ea-fill" style="width:79%;background:#fbbf24"></div></div>
+                <div class="ea-score">Mean = 3.97 / 5.0</div>
+              </div>
+              <div class="esg-assess-item">
+                <div class="ea-label">🌡️ Nhận thức Carbon</div>
+                <div class="ea-bar"><div class="ea-fill" style="width:89%"></div></div>
+                <div class="ea-score">Mean = 4.43 / 5.0</div>
+              </div>
+              <div class="esg-assess-item">
+                <div class="ea-label">⟡ Tin tưởng Token Carbon</div>
+                <div class="ea-bar"><div class="ea-fill" style="width:74%;background:#a855f7"></div></div>
+                <div class="ea-score">Mean = 3.72 / 5.0</div>
+              </div>
+            </div>
+            <div class="chart-note">
+              Nhận thức Carbon (4.43) và Tác động MT (4.21) là các chỉ số ESG được đánh giá cao nhất.
+              Token Carbon (3.72) — cần tăng cường giáo dục blockchain.
+            </div>
+          </div>
+
+        </section>
+
+        <!-- ===================== SCREEN 11: PROFILE ===================== -->
+        <section class="screen hidden" id="screen-profile">
+
+          <!-- PROFILE HERO BANNER -->
+          <div class="profile-banner">
+            <div class="profile-banner-bg"></div>
+            <div class="profile-banner-content">
+              <!-- AVATAR + CORE INFO -->
+              <div class="profile-hero-row">
+                <div class="profile-avatar-wrap">
+                  <div class="profile-avatar" id="profileAvatar">NV</div>
+                  <div class="profile-avatar-badge">🥇</div>
+                  <label class="avatar-upload-btn" title="Thay ảnh">
+                    <input type="file" accept="image/*" onchange="handleAvatarUpload(event)" style="display:none" />
+                    📷
+                  </label>
+                </div>
+                <div class="profile-hero-info">
+                  <div class="profile-name-row">
+                    <h1 class="profile-fullname" id="profileName">Nguyễn Văn An</h1>
+                    <span class="profile-rank-badge gold-rank">🥇 GOLD</span>
+                    <span class="profile-kyc-badge">✓ KYC Verified</span>
+                  </div>
+                  <div class="profile-wallet-row">
+                    <span class="profile-wallet-addr" id="profileWalletAddr">0x3f7a...e9b2</span>
+                    <button class="profile-copy-btn" onclick="copyProfileAddr()" title="Sao chép">⎘</button>
+                    <span class="profile-on-chain">🔗 Polygon Mainnet</span>
+                  </div>
+                  <div class="profile-meta-row">
+                    <span class="pmeta-item">📅 Tham gia: <strong>12/03/2024</strong></span>
+                    <span class="pmeta-item">🔥 Streak: <strong class="green">18 ngày</strong></span>
+                    <span class="pmeta-item">⭐ ESG Score: <strong class="green">A+</strong></span>
+                    <span class="pmeta-item">🌿 Hạng #18 toàn cầu</span>
+                  </div>
+                </div>
+                <button class="btn-primary profile-edit-btn" onclick="showEditProfile()">✏️ Chỉnh sửa</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- STATS GRID -->
+          <div class="profile-stats-grid">
+            <div class="pstat-card">
+              <div class="pstat-icon">🌿</div>
+              <div class="pstat-value">4,250</div>
+              <div class="pstat-label">Carbon Credits</div>
+              <div class="pstat-sub">≈ ₫18.06M</div>
+            </div>
+            <div class="pstat-card">
+              <div class="pstat-icon">⇄</div>
+              <div class="pstat-value">247</div>
+              <div class="pstat-label">Giao dịch</div>
+              <div class="pstat-sub">✓ 100% thành công</div>
+            </div>
+            <div class="pstat-card">
+              <div class="pstat-icon">💰</div>
+              <div class="pstat-value">₫20.2M</div>
+              <div class="pstat-label">Số dư ví</div>
+              <div class="pstat-sub">ETH 0.148 · USDT 850</div>
+            </div>
+            <div class="pstat-card">
+              <div class="pstat-icon">📊</div>
+              <div class="pstat-value">88/100</div>
+              <div class="pstat-label">ESG Score</div>
+              <div class="pstat-sub">Top 5% · Hạng A+</div>
+            </div>
+            <div class="pstat-card">
+              <div class="pstat-icon">🎨</div>
+              <div class="pstat-value">12</div>
+              <div class="pstat-label">NFT Sở hữu</div>
+              <div class="pstat-sub">4 Rare · 1 Epic</div>
+            </div>
+            <div class="pstat-card">
+              <div class="pstat-icon">💨</div>
+              <div class="pstat-value">847kg</div>
+              <div class="pstat-label">CO₂ Offset</div>
+              <div class="pstat-sub">▲ +12.4kg tuần này</div>
+            </div>
+          </div>
+
+          <!-- MAIN CONTENT GRID -->
+          <div class="profile-main-grid">
+
+            <!-- LEFT COL -->
+            <div class="profile-left-col">
+
+              <!-- ACTIVITY / TX HISTORY -->
+              <div class="glass-card">
+                <div class="card-header">
+                  <span class="card-title">📋 Lịch sử giao dịch</span>
+                  <div class="tx-filters" id="profileTxFilters">
+                    <button class="tx-filter active" onclick="filterProfileTx('all',this)">Tất cả</button>
+                    <button class="tx-filter" onclick="filterProfileTx('mint',this)">Mint</button>
+                    <button class="tx-filter" onclick="filterProfileTx('sell',this)">Trade</button>
+                    <button class="tx-filter" onclick="filterProfileTx('charge',this)">Sạc</button>
+                  </div>
+                </div>
+                <div class="ledger-table-wrap">
+                  <table class="ledger-table">
+                    <thead>
+                      <tr>
+                        <th>Loại</th>
+                        <th>Mô tả</th>
+                        <th>Số lượng</th>
+                        <th>Giá trị</th>
+                        <th>Trạng thái</th>
+                        <th>Thời gian</th>
+                        <th>Hash</th>
+                      </tr>
+                    </thead>
+                    <tbody id="profileLedgerBody"></tbody>
+                  </table>
+                </div>
+              </div>
+
+              <!-- ESG IMPACT -->
+              <div class="glass-card">
+                <div class="card-header">
+                  <span class="card-title">🌍 ESG Impact</span>
+                  <button class="btn-ghost btn-sm" onclick="showToast('Đang xuất báo cáo ESG PDF...','📊')">Xuất
+                    PDF</button>
+                </div>
+                <div class="profile-esg-row">
+                  <div class="pesg-scores">
+                    <div class="pesg-ring-wrap">
+                      <canvas id="profileEsgRing" width="120" height="120"></canvas>
+                      <div class="pesg-ring-center">
+                        <div class="pesg-grade">A+</div>
+                        <div class="pesg-grade-sub">ESG</div>
+                      </div>
+                    </div>
+                    <div class="pesg-breakdown">
+                      <div class="pesg-item">
+                        <div class="pesg-label">🌿 Environmental</div>
+                        <div class="pesg-bar">
+                          <div class="pesg-fill" style="width:94%;background:#10b981"></div>
+                        </div>
+                        <div class="pesg-score">94</div>
+                      </div>
+                      <div class="pesg-item">
+                        <div class="pesg-label">🤝 Social</div>
+                        <div class="pesg-bar">
+                          <div class="pesg-fill" style="width:81%;background:#38bdf8"></div>
+                        </div>
+                        <div class="pesg-score">81</div>
+                      </div>
+                      <div class="pesg-item">
+                        <div class="pesg-label">⚖️ Governance</div>
+                        <div class="pesg-bar">
+                          <div class="pesg-fill" style="width:88%;background:#fbbf24"></div>
+                        </div>
+                        <div class="pesg-score">88</div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="pesg-chart-wrap">
+                    <div class="pesg-chart-label">CO₂ offset theo tháng (kg)</div>
+                    <canvas id="profileCo2Chart" height="100"></canvas>
+                  </div>
+                </div>
+                <!-- RANKING COMPARISON -->
+                <div class="profile-ranking">
+                  <div class="pr-title">So sánh với cộng đồng</div>
+                  <div class="pr-items" id="profileRankingList"></div>
+                </div>
+              </div>
+
+            </div>
+
+            <!-- RIGHT COL -->
+            <div class="profile-right-col">
+
+              <!-- NFT ASSETS -->
+              <div class="glass-card">
+                <div class="card-header">
+                  <span class="card-title">🎨 NFT Carbon Credits</span>
+                  <span class="badge badge-purple">12 NFTs</span>
+                </div>
+                <div class="nft-grid" id="nftGrid"></div>
+              </div>
+
+              <!-- BADGES -->
+              <div class="glass-card">
+                <div class="card-header">
+                  <span class="card-title">🏆 Huy hiệu</span>
+                  <span class="badge badge-gold">4 / 12 đạt</span>
+                </div>
+                <div class="profile-badge-grid" id="profileBadgeGrid"></div>
+              </div>
+
+              <!-- SECURITY & SETTINGS -->
+              <div class="glass-card">
+                <div class="card-header"><span class="card-title">🔒 Bảo mật & Cài đặt</span></div>
+                <div class="security-list">
+                  <div class="security-item">
+                    <div class="si-left">
+                      <div class="si-icon">🔑</div>
+                      <div class="si-info">
+                        <div class="si-name">Mật khẩu</div>
+                        <div class="si-sub">Cập nhật lần cuối: 15/01/2026</div>
+                      </div>
+                    </div>
+                    <button class="btn-ghost btn-sm" onclick="showModal('changePasswordModal')">Đổi</button>
+                  </div>
+                  <div class="security-item">
+                    <div class="si-left">
+                      <div class="si-icon">📱</div>
+                      <div class="si-info">
+                        <div class="si-name">Xác thực 2 lớp (2FA)</div>
+                        <div class="si-sub">Google Authenticator · Đã bật</div>
+                      </div>
+                    </div>
+                    <div class="toggle-switch on" onclick="toggle2FA(this)">
+                      <div class="toggle-knob"></div>
+                    </div>
+                  </div>
+                  <div class="security-item">
+                    <div class="si-left">
+                      <div class="si-icon">🔗</div>
+                      <div class="si-info">
+                        <div class="si-name">Ví MetaMask</div>
+                        <div class="si-sub">0x3f7a...e9b2 · Đã kết nối</div>
+                      </div>
+                    </div>
+                    <button class="btn-danger btn-sm" onclick="showToast('Đã ngắt kết nối MetaMask','🔗')">Ngắt</button>
+                  </div>
+                  <div class="security-item">
+                    <div class="si-left">
+                      <div class="si-icon">📧</div>
+                      <div class="si-info">
+                        <div class="si-name">Email</div>
+                        <div class="si-sub">nguyenvanan@gmail.com · Đã xác thực</div>
+                      </div>
+                    </div>
+                    <span class="badge badge-green">✓</span>
+                  </div>
+                  <div class="security-item">
+                    <div class="si-left">
+                      <div class="si-icon">🛡</div>
+                      <div class="si-info">
+                        <div class="si-name">KYC / eKYC</div>
+                        <div class="si-sub">CCCD · Xác minh 12/03/2024 · Cấp độ 3</div>
+                      </div>
+                    </div>
+                    <span class="badge badge-green">Verified</span>
+                  </div>
+                  <div class="security-item">
+                    <div class="si-left">
+                      <div class="si-icon">📊</div>
+                      <div class="si-info">
+                        <div class="si-name">Phiên đăng nhập hoạt động</div>
+                        <div class="si-sub">Chrome · Windows · TP.HCM · Ngay bây giờ</div>
+                      </div>
+                    </div>
+                    <button class="btn-ghost btn-sm" onclick="showToast('Đã đăng xuất tất cả phiên khác','✓')">Đăng xuất
+                      tất cả</button>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </section>
+
+      </main>
+    </div>
+  </div>
+
+  <!-- MODALS -->
+  <div class="modal-overlay hidden" id="modalOverlay" onclick="closeModal()">
+    <div class="modal" id="modalContent" onclick="event.stopPropagation()">
+      <div id="modalBody"></div>
+    </div>
+  </div>
+
+  <!-- SUCCESS TOAST -->
+  <div class="toast hidden" id="toast">
+    <div class="toast-icon" id="toastIcon">✓</div>
+    <div id="toastMsg">Thành công!</div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+
+</html>
